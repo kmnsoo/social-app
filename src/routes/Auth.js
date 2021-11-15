@@ -6,6 +6,7 @@ function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newAccount, setNewAccount] = useState(true);
+  const [error, setError] = useState("");
   // input의 onChange를 누를때마다 onChange함수로 온다. 그리고 event실행. 여기서 event는 무슨 일이 일어났는가를 뜻함.
   // 이 코드에서는 사용자가 입력시, input의 변경(name, password_value)이 일어남.
   const onChange = (event) => {
@@ -32,7 +33,7 @@ function Auth() {
       }
       console.log(data);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
   return (
@@ -41,6 +42,7 @@ function Auth() {
         <input name="email" type="email" placeholder="Email" required value={email} onChange={onChange} />
         <input name="password" type="password" placeholder="password" required value={password} onChange={onChange} />
         <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
+        {error}
       </form>
       <div>
         <button>Continue with Google</button>
