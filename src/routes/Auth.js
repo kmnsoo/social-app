@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 function Auth() {
   const auth = getAuth();
   const [email, setEmail] = useState("");
@@ -36,6 +42,23 @@ function Auth() {
       setError(error.message);
     }
   };
+  // newAccount의 이전 값을 가져와서 그 값에 반대되는 것을 리턴한다.
+  const toggleAccount = () => setNewAccount((prev) => !prev);
+
+  //Social login 연동
+  const onSocialClick = async (event) => {
+    const {
+      target: { name },
+    } = event;
+    let provider;
+
+    if (name === "google") {
+      provider = new GoogleAuthProvider();
+    } else if (name === "github") {
+      provider = new GithubAuthProvider();
+    }
+    await signInWithPopup(auth, provider);
+  };
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -44,9 +67,14 @@ function Auth() {
         <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
         {error}
       </form>
+      <span onClick={toggleAccount}> {newAccount ? "Sign In" : "Create Account"}</span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button onClick={onSocialClick} name="google">
+          Continue with Google
+        </button>
+        <button onClick={onSocialClick} name="github">
+          Continue with Github
+        </button>
       </div>
     </div>
   );
